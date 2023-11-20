@@ -14,9 +14,7 @@ filter.ols <- function(Y,D,S,G.id,Ng,X,s,d)
   X.unique <- unique(working.df[, 6:ncol(working.df)])
   cl.lvl.data <- data.frame(cl.lvl.data, 'Y.bar' = Y.bar.g$Y, X.unique)
   data <- cl.lvl.data
-  
-  #X <- as.matrix(X)
-  #data <- data.frame(Y,S,D,X)
+
   keep.s <- s
   keep.d <- d
   filtered.data <- data[data$D %in% keep.d & data$S %in% keep.s, ]
@@ -26,7 +24,7 @@ filter.ols <- function(Y,D,S,G.id,Ng,X,s,d)
 }
 #-------------------------------------------------------------------
 lm.iter <- function(Y,D,S,G.id,Ng,X,exp.option =FALSE)
-  #-------------------------------------------------------------------
+#-------------------------------------------------------------------
 { 
   theta.list <- rep(list(matrix(NA, ncol = ncol(X) + 1, nrow = max(S))), (max(D) + 1))
   if (exp.option == TRUE)
@@ -55,8 +53,6 @@ lm.iter <- function(Y,D,S,G.id,Ng,X,exp.option =FALSE)
       {
         theta.list[[d+1]][s, ] <- coef(result)[2:(2 + ncol(X))]
       }
-      #theta.matr[d+1, s] <- coef(result)[2]
-      #k = k + 1
     }
   }
   list.rtrn <- theta.list
@@ -65,9 +61,7 @@ lm.iter <- function(Y,D,S,G.id,Ng,X,exp.option =FALSE)
 #-------------------------------------------------------------------
 lin.adj <- function(a,data,model, exp.option = FALSE)
   #-------------------------------------------------------------------
-{ 
-  #working.df <- data.frame(Y,D,S,G.id,Ng,X)
-  #working.df <- data
+{
   working.df <- data
   Y.bar.g <- aggregate(Y ~ G.id, working.df, mean)
   cl.lvl.data <- unique(working.df[, c("G.id", "D", "S", 'Ng')]) # created data on a cluster level for estimating pi.hat(s)
@@ -76,7 +70,6 @@ lin.adj <- function(a,data,model, exp.option = FALSE)
   data <- cl.lvl.data
   X.data <- cl.lvl.data[, 6:ncol(cl.lvl.data)]
   
-  #data <- data.frame(S,X,Ng)
   theta.mtrx <- model[[a+1]]
   theta.vec.matched <- theta.mtrx[data$S, ]
   if (exp.option == FALSE)
@@ -99,7 +92,7 @@ pi.hat <- function(cl.lvl.data)
   D <- cl.lvl.data$D
   n <- length(S)
   data <- data.frame(S,D)
-  #n.1.s <- length(data[data$D %in% 1 & data$S %in% 6, 2])
+
   pi.hat.mtrx <- matrix(NA, nrow = n, ncol = max(D))
   for (d in 1:max(D))
   {
@@ -108,7 +101,6 @@ pi.hat <- function(cl.lvl.data)
       n.1.s <-  length(data[data$D %in% d & data$S %in% data$S[i], 2])
       n.0.s <-  length(data[data$D %in% 0 & data$S %in% data$S[i], 2])
       n.s <- n.1.s + n.0.s
-      #n.s <- length(data[data$S %in% data$S[i], 2])
       pi.hat.mtrx[i,d] <- n.1.s / n.s
     }
   }
@@ -124,12 +116,8 @@ tau.hat <- function(Y,D,S,G.id,Ng,X,model, exp.option = FALSE)
   pi.hat.list <- rep(list(NA),max(D))
   data.bin.list <- rep(list(NA),max(D))
   working.df <- data.frame(Y,D,S,G.id,Ng,X)
-  #Y.bar.g <- aggregate(Y ~ G.id, working.df, mean)
+  
   cl.lvl.data <- unique(working.df[, c("G.id", "D", "S", 'Ng')]) # created data on a cluster level for estimating pi.hat(s)
-  #X.unique <- unique(working.df[, 5:ncol(working.df)])
-  #cl.lvl.data <- cbind(cl.lvl.data, X.unique)
-  #pi.hat.vec <- pi.hat(cl.lvl.data)       #pi.hat(s)
-  #pi.hat.vec <- pi.hat(cl.lvl.data)
   
   for (d in 1:max(D))
   {
@@ -153,8 +141,6 @@ tau.hat <- function(Y,D,S,G.id,Ng,X,model, exp.option = FALSE)
     Xi.g <- ((data.bin$A * (Y.bar.g$Y - mu.hat.d)) / data.bin$pi) - (((1 - data.bin$A) * (Y.bar.g$Y - mu.hat.0)) / (1 - data.bin$pi)) + mu.hat.d - mu.hat.0
     
     mu.hat.list[[d]] <- as.matrix(cbind(mu.hat.0,mu.hat.d), ncol = 2)
-    #cl.lvl.data$A <- as.numeric(cl.lvl.data$D != 0)
-    #cl.lvl.data.filter <- cl.lvl.data[data$D %in% c(d,0), ]
     Ng.ind <- data.bin$Ng
     tau.hat <- sum(Ng.ind * Xi.g) / sum(Ng.ind)  # Final estimator
     
@@ -187,15 +173,7 @@ as.var <- function(model, fit)
     mu.hat.d <- fit$mu.hat[[d]][,2]
     pi.hat <- fit$pi.hat[[d]]
     tau.est <- fit$tau.hat
-    #data <- data.frame(Y,S,D,X)
-    #data$pi <- pi.hat(S,D,X)[, d]  
-    #data.bin <- data[data$D %in% c(d,0), ]
-    #data.bin$A <- as.numeric(data.bin$D != 0)
-    #n.d <- length(Y)
     
-    #mu.hat.d <- lin.adj(d, data.bin$S, data.bin[4:(4+ncol(X)-1)], model)
-    #mu.hat.0 <- lin.adj(0, data.bin$S, data.bin[4:(4+ncol(X)-1)], model)
-    #data.bin <- data.frame(data.bin, mu.hat.d, mu.hat.0)
     data.filter <- fit$data.bin[[d]]
     
     Xi.tilde.1 <- (1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
@@ -203,16 +181,7 @@ as.var <- function(model, fit)
     
     Xi.tilde.0 <- ((1 / (1 - pi.hat)) - 1) * data.filter$Ng * mu.hat.0 + data.filter$Ng * mu.hat.d -
       data.filter$Ng * (Y.bar.g / (1 - pi.hat)) - tau.est[d] * (-data.filter$A / (1 - pi.hat)) * data.filter$Ng
-    
-    # test.table <- data.frame('old' = tau.est[d] * (data.filter$A / pi.hat), 'new' = tau.est[d] * (data.filter$A / pi.hat) * data.filter$Ng,
-    #                          "old.sq" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-    #                            data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat))^2, "new.sq" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-    #                                                                                                                          data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat) * data.filter$Ng)^2,
-    #                          "A" = data.filter$A, "mult.old" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-    #                                                               data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat))^2 * data.filter$A, "mult.new" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-    #                                                                                                                                                                                data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat) * data.filter$Ng)^2 * data.filter$A)
-    #data.bin <- data.frame(data.bin, Xi.tilde.1, Xi.tilde.0, Y.tau.D = data.bin$Y - tau[d] * data.bin$A)
-    
+  
     data.bin <- data.frame(data.filter, Xi.tilde.1, Xi.tilde.0, Y.tau.D = Y.bar.g - tau.est[d] * data.filter$A)
     n.d <- length(data.bin$G.id)
     Ng.d <-data.bin$Ng
@@ -234,19 +203,12 @@ as.var <- function(model, fit)
     Xi.hat.0 <- Xi.tilde.0 - Xi.0.mean
     Xi.hat.2 <- Y.g.bar.cl.1 - Y.g.bar.cl.0
     
-    #old.1  <- Xi.hat.1
-    #old.mean <- Xi.1.mean
-    #old.tilde <- Xi.tilde.1 
-    #test.table <- data.frame(old.1, Xi.hat.1, old.mean, Xi.1.mean, old.tilde, Xi.tilde.1, data.bin$A)
-    
     sigma.hat.sq <-  mean((data.bin$A * (Xi.hat.1)^2 + (1 - data.bin$A) * (Xi.hat.0)^2 + (Xi.hat.2)^2)) /  (mean(Ng.d))^2
     
     var.vec[d] <- sigma.hat.sq
     n.vec[d]   <- n.d
     
   }
-  #print(var.vec)
-  #print(n.vec)
   se.vec <- sqrt(var.vec/n.vec)
   return(se.vec)
 }
@@ -370,13 +332,8 @@ gen.cluster.sizes <-function(G,max.support,s=1.5)
 #------------------------------------------------------------------
 gen.data.pot <- function(Ng, G, tau.vec, sigma1=sqrt(2), 
                          gamma.vec = c(0.4, 0.2, 1, 0.1, 0.8), n.treat)
-  #------------------------------------------------------------------
+#------------------------------------------------------------------
 {
-  #for (a in seq_along(tau.vec)) 
-  #{
-  #  assign(paste("mu.", a, sep = ""), tau.vec[a])                                #create mu.a, where a \in \mathbb{A}
-  #}
-  
   x_1 <- rbeta(G, 2, 4)
   x_2 <- rbeta(G, 2, 4)
   X <- data.frame(x_1, x_2)
@@ -384,69 +341,23 @@ gen.data.pot <- function(Ng, G, tau.vec, sigma1=sqrt(2),
   Z.g.2 <- x_1
   mu.0 <- 10 * (x_1 - (1/3)) + 6 * (x_2 - (1/3)) + 2
   mu.1 <- mu.0
-  #, x_3, x_4)
   
   cluster.indicator = rep(c(1:G),Ng);
   cl.id <-  cluster.indicator
   total.sample = length(cluster.indicator)
   
-  
-  #epsilon.ig.1 = rnorm(total.sample,0,sigma1);
-  epsilon.ig.0 = rnorm(total.sample, 0, 1);
-  epsilon.ig.1 = rnorm(total.sample, 0, 1);
-  #epsilon.ig.1 = rnorm(total.sample, 0, sigma1)
-  #for (a in 1:n.treat)                              
-  #{                             
-  #  assign(paste("epsilon.ig.", a, sep = ""), rnorm(total.sample,0,sigma1))                             
-  #}  
-  #Ng.norm <- (Ng - mean(Ng)) / sd(Ng)
-  #m.0 <- eta.0.g*Z.g.1 + gamma.vec[1] * x_1
-  #m.1 <- tau.vec[1] * eta.1.g + eta.2.g.1 * Z.g.1 + gamma.vec[1] * x_1
-  #for (a in 1:n.treat)                                                           # create m() functions m.a for every treatment a \in \mathbb{A}
-  #{
-  #  assign(paste("m.", a, sep = ""), tau.vec[a] * eta.1.g + eta.2.g.1 * Z.g.1 + gamma.vec[1] * x_1)
-  #}
-  
-  
-  #m.1 <- (m.1.raw - mean(m.1.raw)) / sd(m.1.raw)
-  # With a different function for m.0
-  #m.0 <- (-gamma) * log(Z.g.2 + 3) * (Z.g.2 <= 0.5)  # G=500 obs
-  # Without a different function for m.0
-  #m.0 <- m.1
-  #m.0 <- (m.0.raw - mean(m.0.raw)) / sd(m.0.raw)
-  
-  # Potential outcomes
-  ### With eta and Z.g.1
-  #Yig.0 <- rep(eta.0.g * Z.g.1 + m.0, Ng) + epsilon.ig.0
-  #Yig.1 <- mu.1 + rep(eta.1.g * Z.g.1 + m.1, Ng) + epsilon.ig.1
-  ### Without eta and Z.g.1
+  epsilon.ig.0 = rnorm(total.sample, 0, sigma1);
+  epsilon.ig.1 = rnorm(total.sample, 0, sigma1);
+ 
   Yig.0 <- rep(mu.0, Ng) + 2 * epsilon.ig.0
   Yig.1 <- rep(mu.1, Ng) + 2 * epsilon.ig.1
-  #Yig.1 <- rep(m.1, Ng) + epsilon.ig.1
-  #for (a in 1:n.treat)
-  #{
-  #  formula <- paste0("rep(m.", a, ",Ng)", "+epsilon.ig.", a)
-  #  result <- eval(parse(text = formula))
-  #  assign(paste("Yig.", a, sep = ""), result)
-  #}
-  
-  #Yig.1 <- mu.1 + rep(m.1, Ng) + epsilon.ig.1
-  
-  #ret.list <- list( 'Y.0' = Yig.0,
-  #                  'Y.1' = Yig.1,
-  #                  #'Z.1' = Z.g.1,
-  #                  'Z.2' = Z.g.2,
-  #                  'X'   = X,
-  #                  'G'   = G,
-  #                  'cl.id' = cluster.indicator, 
-  #                  'Ng' = Ng)
+
   ret.names <- c(paste("Yig.", 0:n.treat, sep = ""),
                  "X", "G", "Ng", "cl.id", "Z.g.2", paste("mu.", 0:n.treat, sep = ""))
   
   ret.list <- mget(ret.names)
   return (ret.list)
 }
-#test.mod <- gen.data.pot(Ng, tau.vec = c(0.2,0.5), G = G, gamma.vec, n.treat = 2)
 
 #---------------------------------------------------------------------
 #%# Function taken from Ivan's website

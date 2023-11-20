@@ -13,6 +13,13 @@
 #%# v.4.1 #%#
 #%##%##%##%##
 #-------------------------------------------------------------------
+#install.packages(c(
+#  "compiler",
+#  "extraDistr",
+#  "VGAM",
+#  "Matrix",
+#  "parallel",
+#  "progress"), dependencies = TRUE)
 library(sandwich) 
 library(lubridate)
 library(compiler)
@@ -21,26 +28,14 @@ library(VGAM)
 library(Matrix)
 library(parallel)
 library(progress)
-#install.packages(c(
-#  "compiler",
-#  "extraDistr",
-#  "VGAM",
-#  "Matrix",
-#  "parallel",
-#  "progress"), dependencies = TRUE)
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
 #         Please, provide the path to the corresponding source
 #                  file with functions on your PC
 #                    ↓↓↓↓↓↓↓↓↓↓↓HERE↓↓↓↓↓↓↓↓↓↓↓
-#source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.3.0.R')
-#source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.4.2.R')   #variance for the first parameter is underestimated, for the second is perfectly fine
-#source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.4.2.1.R') #for both parameters variance is seriously overestimated
-#source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.4.2.2.R')
 source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.4.5.R')
 
 enableJIT(3)
-#source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.1.4.R')
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
 
@@ -50,7 +45,7 @@ options(scipen = 999)        # disable scientific notation
 num_cores <- detectCores()
 cl <- makeCluster(num_cores,outfile = "")
 
-######## ^^^ SIMULATION PARAMETERS SHOULD BE DEFINED HERE ^^^ ##########
+# Upload the libraries to the cluster
 clusterEvalQ(cl, {
   library(sandwich) 
   library(lubridate)
@@ -64,6 +59,8 @@ clusterEvalQ(cl, {
 })
 
 # The main function for the Lapply loop
+# Function that performs simulations and takes as input
+# Only the number of simulation, sim.id
 sim.func <- function(sim.id)
 {
   G = 100;
@@ -77,8 +74,9 @@ sim.func <- function(sim.id)
   seed <- 1000 + sim.id
   set.seed(seed)
   Ng <- gen.cluster.sizes(G, max.support)[,1]
-  #Ng <- rep(Nmax, G)
-  data.pot <- gen.data.pot(Ng=Ng, tau.vec = (tau.vec / 0.5), G = G, gamma.vec = gamma.vec, n.treat=n.treat)
+  #Ng <- rep(Nmax, G)                                                            # uncomment and comment the previous line for a equal-size design
+  data.pot <- gen.data.pot(Ng=Ng, tau.vec = (tau.vec / 0.5), G = G, 
+                           gamma.vec = gamma.vec, n.treat=n.treat)
   strata <- form.strata(data.pot, n.strata)
   strata.set <- data.frame(strata)
   strata.set$S <- max.col(strata.set)
@@ -93,20 +91,16 @@ sim.func <- function(sim.id)
   Ng <- data.sim$Ng
   G.id <- data.sim$G.id
   
-  #model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option =T)
-  #fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = T)\
-  #fit$tau.hat
-  #as.var <- as.var(Y,S,D,X,model, fit)
-  result <- tryCatch({sreg(Y,D,S,G.id,Ng,X, exp.option = F)}, error = function(e) {
+  #model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option =T) # change for exp.option = T if the equal-size design
+  #fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = T)
+  result <- tryCatch({sreg(Y,D,S,G.id,Ng,X, exp.option = F)}, error = function(e) { # tryCatch to avoid errors that stop the execution
     # Print the error message if an error occurs
     cat("Simulation", sim.id, "encountered an error:", conditionMessage(e), "\n")
     # Return a default value or NULL when an error occurs
     NA
   })
   
-  #result <- sreg(Y,D,S,G.id,Ng,X, exp.option = F)
-  
-  
+  # if condition for NA cases
   if (anyNA(result) == TRUE)
   {
     tau      <- NA
@@ -122,6 +116,7 @@ sim.func <- function(sim.id)
                     CI.right = CI.right,
                     ci.hit = ci.hit)
   } else{
+    # else condition for Non-NA cases
     tau      <- result$tau.hat
     se       <- result$se.rob
     tstat    <- result$t.stat
@@ -136,7 +131,7 @@ sim.func <- function(sim.id)
                     CI.right = CI.right,
                     ci.hit = ci.hit)}
   message(paste("Simulation", sim.id, "completed succesfully"))
-  #setTxtProgressBar(pb, sim.id)
+  
   return(results)
   
 }
@@ -145,12 +140,13 @@ sim.func <- function(sim.id)
 simres <- parLapply(cl, 1:5000, sim.func)
 mb <- microbenchmark(parLapply(cl, 1:100, sim.func), times = 1)
 
+###################
 # Close the cluster
 stopCluster(cl)
+# Close the cluster
+###################
 
-# Now, results is a list of results from each simulation
-
-# Extract beta and se from the results
+# Extract parameters of interest from the results
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -158,6 +154,4 @@ mean(tau)
 sd(tau)
 mean(se)
 mean(ci.hit)
-length(tau)
-install.packages("microbenchmark")
-library(microbenchmark)
+length(tau)``
