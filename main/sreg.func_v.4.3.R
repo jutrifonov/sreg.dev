@@ -177,8 +177,8 @@ tau.hat <- function(Y,D,S,G.id,Ng,X,model, exp.option = FALSE)
 #-------------------------------------------------------------------
 as.var <- function(model, fit)
 {
-  var.vec <- rep(NA, max(D))
-  n.vec <- rep(NA, max(D))
+  var.vec <- rep(NA, length(fit$tau.hat))
+  n.vec <- rep(NA, length(fit$tau.hat))
   
   for (d in 1:length(fit$tau.hat))
   {
