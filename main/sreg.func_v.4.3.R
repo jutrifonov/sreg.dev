@@ -180,22 +180,14 @@ as.var <- function(model, fit)
   var.vec <- rep(NA, max(D))
   n.vec <- rep(NA, max(D))
   
-  for (d in 1:max(D))
+  for (d in 1:length(fit$tau.hat))
   {
     Y.bar.g <- fit$Y.bar.g[[d]]
     mu.hat.0 <- fit$mu.hat[[d]][,1]
     mu.hat.d <- fit$mu.hat[[d]][,2]
     pi.hat <- fit$pi.hat[[d]]
     tau.est <- fit$tau.hat
-    #data <- data.frame(Y,S,D,X)
-    #data$pi <- pi.hat(S,D,X)[, d]  
-    #data.bin <- data[data$D %in% c(d,0), ]
-    #data.bin$A <- as.numeric(data.bin$D != 0)
-    #n.d <- length(Y)
     
-    #mu.hat.d <- lin.adj(d, data.bin$S, data.bin[4:(4+ncol(X)-1)], model)
-    #mu.hat.0 <- lin.adj(0, data.bin$S, data.bin[4:(4+ncol(X)-1)], model)
-    #data.bin <- data.frame(data.bin, mu.hat.d, mu.hat.0)
     data.filter <- fit$data.bin[[d]]
     
     Xi.tilde.1 <- (1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
@@ -568,7 +560,7 @@ dgp.obs <- function(baseline, I.S, pi.vec, n.treat)
   strata.set$S <- max.col(strata.set)
   cluster.indicator <- baseline$cl.id 
   G.seq <- seq(c(1:baseline$G))
-  data.short <- data.frame('cl.id'=G.seq, A, S = strata.set$S, Ng = Ng, 
+  data.short <- data.frame('cl.id'=G.seq, A, S = strata.set$S, Ng = baseline$Ng, 
                            baseline$X)
   data.long <- data.frame('cl.id'= cluster.indicator)
   merged.data <- merge(data.long, data.short, by = "cl.id")
