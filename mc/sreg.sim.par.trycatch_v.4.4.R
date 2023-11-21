@@ -33,7 +33,8 @@ library(progress)
 #         Please, provide the path to the corresponding source
 #                  file with functions on your PC
 #                    ↓↓↓↓↓↓↓↓↓↓↓HERE↓↓↓↓↓↓↓↓↓↓↓
-source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.4.5.R')
+source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.3.R')
+
 
 enableJIT(3)
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
@@ -55,7 +56,7 @@ clusterEvalQ(cl, {
   library(Matrix)
   library(progress)
   library(parallel)
-  source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.func_v.4.5.R')
+  source('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.3.R')
 })
 
 # The main function for the Lapply loop
@@ -65,24 +66,23 @@ sim.func <- function(sim.id)
 {
   G = 100;
   Nmax=500;
-  tau.vec <- c(0)
+  tau.vec <- c(0.5)
   n.treat <- length(tau.vec)
   max.support = Nmax/10-1;
   gamma.vec <-c(0.4, 0.2, 1)
-  n.strata <- 4
+  n.strata <- 2
   
   seed <- 1000 + sim.id
   set.seed(seed)
   Ng <- gen.cluster.sizes(G, max.support)[,1]
   #Ng <- rep(Nmax, G)                                                            # uncomment and comment the previous line for a equal-size design
-  data.pot <- gen.data.pot(Ng=Ng, tau.vec = (tau.vec / 0.5), G = G, 
-                           gamma.vec = gamma.vec, n.treat=n.treat)
+  data.pot <- gen.data.pot(Ng=Ng, tau.vec = tau.vec, G = G, gamma.vec = gamma.vec, n.treat=n.treat)
+  
   strata <- form.strata(data.pot, n.strata)
   strata.set <- data.frame(strata)
   strata.set$S <- max.col(strata.set)
-  pi.vec <- rep(c(1 / (n.treat + 1)), n.treat)   
+  pi.vec <- rep(c(1 / (n.treat + 1)), n.treat) 
   data.sim <- dgp.obs(data.pot, I.S = strata, pi.vec, n.treat)
-  
   finale <- data.frame('Y'= data.sim$Y, 'D' = data.sim$D)
   Y <- data.sim$Y
   D <- data.sim$D
@@ -93,12 +93,14 @@ sim.func <- function(sim.id)
   
   #model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option =T) # change for exp.option = T if the equal-size design
   #fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = T)
+
   result <- tryCatch({sreg(Y,D,S,G.id,Ng,X, exp.option = F)}, error = function(e) { # tryCatch to avoid errors that stop the execution
     # Print the error message if an error occurs
     cat("Simulation", sim.id, "encountered an error:", conditionMessage(e), "\n")
     # Return a default value or NULL when an error occurs
     NA
   })
+
   
   # if condition for NA cases
   if (anyNA(result) == TRUE)
@@ -137,8 +139,8 @@ sim.func <- function(sim.id)
 }
 
 # Parallelize the simulations and store the results
-simres <- parLapply(cl, 1:5000, sim.func)
-mb <- microbenchmark(parLapply(cl, 1:100, sim.func), times = 1)
+simres <- parLapply(cl, 1:100, sim.func)
+#mb <- microbenchmark(parLapply(cl, 1:100, sim.func), times = 1)
 
 ###################
 # Close the cluster
@@ -154,4 +156,4 @@ mean(tau)
 sd(tau)
 mean(se)
 mean(ci.hit)
-length(tau)``
+length(tau)
