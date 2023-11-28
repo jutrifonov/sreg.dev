@@ -46,7 +46,7 @@ num_cores <- detectCores()
 cl <- makeCluster(num_cores,outfile = "")
 
 # Upload the libraries to the cluster
-clusterEvalQ(cl, {
+ clusterEvalQ(cl, {
   library(sandwich) 
   library(lubridate)
   library(compiler)

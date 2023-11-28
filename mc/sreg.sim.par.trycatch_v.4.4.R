@@ -64,13 +64,13 @@ clusterEvalQ(cl, {
 # Only the number of simulation, sim.id
 sim.func <- function(sim.id)
 {
-  G = 100;
+  G = 1000;
   Nmax=500;
   tau.vec <- c(0.5)
   n.treat <- length(tau.vec)
   max.support = Nmax/10-1;
   gamma.vec <-c(0.4, 0.2, 1)
-  n.strata <- 2
+  n.strata <- 5
   
   seed <- 1000 + sim.id
   set.seed(seed)
@@ -139,7 +139,7 @@ sim.func <- function(sim.id)
 }
 
 # Parallelize the simulations and store the results
-simres <- parLapply(cl, 1:100, sim.func)
+simres <- parLapply(cl, 1:3000, sim.func)
 #mb <- microbenchmark(parLapply(cl, 1:100, sim.func), times = 1)
 
 ###################
