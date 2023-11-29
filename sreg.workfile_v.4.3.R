@@ -58,7 +58,7 @@ result <- sreg(Y,D,S,G.id, Ng, X, exp.option = FALSE)
 result$tau.hat
 result$se.rob
 summary.sreg(result)
-
+lm.iter(Y,D,S,G.id,Ng,X)
 
 
 

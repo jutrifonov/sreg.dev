@@ -46,6 +46,7 @@ lm.iter <- function(Y,D,S,G.id,Ng,X,exp.option =FALSE)
         data.filtered.adj <- data.frame(Y.bar = data.filtered$Y.bar, data.X)
       }
       result <- lm(Y.bar ~ ., data = data.filtered.adj)
+      print(summary(result))
       
       if (exp.option == TRUE)
       {
