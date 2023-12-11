@@ -10,7 +10,7 @@
 ####    @Max Tabord-Meehan, UChicago    ####
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%
 #%##%##%##%##
-#%# v.4.0 #%#
+#%# v.4.3 #%#
 #%##%##%##%##
 
 options(scipen = 999)                                                            # disable scientific notation

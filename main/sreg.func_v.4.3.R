@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------
+#------------------------------------------------------------------
 #%# (1) Auxiliary function providing the appropriate data.frame
 #%#     for the subsequent iterative OLS estimation. Takes into account
 #%#     the number of observations and creates indicators.
@@ -15,8 +15,6 @@ filter.ols <- function(Y,D,S,G.id,Ng,X,s,d)
   cl.lvl.data <- data.frame(cl.lvl.data, 'Y.bar' = Y.bar.g$Y, X.unique)
   data <- cl.lvl.data
   
-  #X <- as.matrix(X)
-  #data <- data.frame(Y,S,D,X)
   keep.s <- s
   keep.d <- d
   filtered.data <- data[data$D %in% keep.d & data$S %in% keep.s, ]
@@ -46,7 +44,6 @@ lm.iter <- function(Y,D,S,G.id,Ng,X,exp.option =FALSE)
         data.filtered.adj <- data.frame(Y.bar = data.filtered$Y.bar, data.X)
       }
       result <- lm(Y.bar ~ ., data = data.filtered.adj)
-      print(summary(result))
       
       if (exp.option == TRUE)
       {
@@ -54,10 +51,8 @@ lm.iter <- function(Y,D,S,G.id,Ng,X,exp.option =FALSE)
       }
       if (exp.option == FALSE)
       {
-      theta.list[[d+1]][s, ] <- coef(result)[2:(2 + ncol(X))]
+        theta.list[[d+1]][s, ] <- coef(result)[2:(2 + ncol(X))]
       }
-      #theta.matr[d+1, s] <- coef(result)[2]
-      #k = k + 1
     }
   }
   list.rtrn <- theta.list
@@ -66,9 +61,7 @@ lm.iter <- function(Y,D,S,G.id,Ng,X,exp.option =FALSE)
 #-------------------------------------------------------------------
 lin.adj <- function(a,data,model, exp.option = FALSE)
   #-------------------------------------------------------------------
-{ 
-  #working.df <- data.frame(Y,D,S,G.id,Ng,X)
-  #working.df <- data
+{
   working.df <- data
   Y.bar.g <- aggregate(Y ~ G.id, working.df, mean)
   cl.lvl.data <- unique(working.df[, c("G.id", "D", "S", 'Ng')]) # created data on a cluster level for estimating pi.hat(s)
@@ -77,19 +70,18 @@ lin.adj <- function(a,data,model, exp.option = FALSE)
   data <- cl.lvl.data
   X.data <- cl.lvl.data[, 6:ncol(cl.lvl.data)]
   
-  #data <- data.frame(S,X,Ng)
   theta.mtrx <- model[[a+1]]
   theta.vec.matched <- theta.mtrx[data$S, ]
   if (exp.option == FALSE)
   {
-  Ng.hat <- theta.vec.matched[, 1] * data$Ng
-  X.hat <- diag(as.matrix(X.data) %*% t(theta.vec.matched[, -1]))
-  mu.hat <- Ng.hat + X.hat 
+    Ng.hat <- theta.vec.matched[, 1] * data$Ng
+    X.hat <- diag(as.matrix(X.data) %*% t(theta.vec.matched[, -1]))
+    mu.hat <- Ng.hat + X.hat 
   }else{
-  X.hat <- diag(as.matrix(X.data) %*% t(theta.vec.matched))
-  mu.hat <-X.hat 
+    X.hat <- diag(as.matrix(X.data) %*% t(theta.vec.matched))
+    mu.hat <-X.hat 
   }
- 
+  
   return(mu.hat)
 }
 #-------------------------------------------------------------------
@@ -100,7 +92,7 @@ pi.hat <- function(cl.lvl.data)
   D <- cl.lvl.data$D
   n <- length(S)
   data <- data.frame(S,D)
-  #n.1.s <- length(data[data$D %in% 1 & data$S %in% 6, 2])
+  
   pi.hat.mtrx <- matrix(NA, nrow = n, ncol = max(D))
   for (d in 1:max(D))
   {
@@ -109,7 +101,6 @@ pi.hat <- function(cl.lvl.data)
       n.1.s <-  length(data[data$D %in% d & data$S %in% data$S[i], 2])
       n.0.s <-  length(data[data$D %in% 0 & data$S %in% data$S[i], 2])
       n.s <- n.1.s + n.0.s
-      #n.s <- length(data[data$S %in% data$S[i], 2])
       pi.hat.mtrx[i,d] <- n.1.s / n.s
     }
   }
@@ -125,12 +116,8 @@ tau.hat <- function(Y,D,S,G.id,Ng,X,model, exp.option = FALSE)
   pi.hat.list <- rep(list(NA),max(D))
   data.bin.list <- rep(list(NA),max(D))
   working.df <- data.frame(Y,D,S,G.id,Ng,X)
-  #Y.bar.g <- aggregate(Y ~ G.id, working.df, mean)
+  
   cl.lvl.data <- unique(working.df[, c("G.id", "D", "S", 'Ng')]) # created data on a cluster level for estimating pi.hat(s)
-  #X.unique <- unique(working.df[, 5:ncol(working.df)])
-  #cl.lvl.data <- cbind(cl.lvl.data, X.unique)
-  #pi.hat.vec <- pi.hat(cl.lvl.data)       #pi.hat(s)
-  #pi.hat.vec <- pi.hat(cl.lvl.data)
   
   for (d in 1:max(D))
   {
@@ -154,8 +141,6 @@ tau.hat <- function(Y,D,S,G.id,Ng,X,model, exp.option = FALSE)
     Xi.g <- ((data.bin$A * (Y.bar.g$Y - mu.hat.d)) / data.bin$pi) - (((1 - data.bin$A) * (Y.bar.g$Y - mu.hat.0)) / (1 - data.bin$pi)) + mu.hat.d - mu.hat.0
     
     mu.hat.list[[d]] <- as.matrix(cbind(mu.hat.0,mu.hat.d), ncol = 2)
-    #cl.lvl.data$A <- as.numeric(cl.lvl.data$D != 0)
-    #cl.lvl.data.filter <- cl.lvl.data[data$D %in% c(d,0), ]
     Ng.ind <- data.bin$Ng
     tau.hat <- sum(Ng.ind * Xi.g) / sum(Ng.ind)  # Final estimator
     
@@ -192,21 +177,12 @@ as.var <- function(model, fit)
     data.filter <- fit$data.bin[[d]]
     
     Xi.tilde.1 <- (1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-      data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat) * data.filter$Ng
+      data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * data.filter$Ng
     
     Xi.tilde.0 <- ((1 / (1 - pi.hat)) - 1) * data.filter$Ng * mu.hat.0 + data.filter$Ng * mu.hat.d -
-      data.filter$Ng * (Y.bar.g / (1 - pi.hat)) - tau.est[d] * (-data.filter$A / (1 - pi.hat)) * data.filter$Ng
+      data.filter$Ng * (Y.bar.g / (1 - pi.hat)) - tau.est[d] * data.filter$Ng
     
-   # test.table <- data.frame('old' = tau.est[d] * (data.filter$A / pi.hat), 'new' = tau.est[d] * (data.filter$A / pi.hat) * data.filter$Ng,
-   #                          "old.sq" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-   #                            data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat))^2, "new.sq" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-   #                                                                                                                          data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat) * data.filter$Ng)^2,
-   #                          "A" = data.filter$A, "mult.old" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-   #                                                               data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat))^2 * data.filter$A, "mult.new" = ((1 - (1/pi.hat)) * data.filter$Ng * mu.hat.d - data.filter$Ng * mu.hat.0 + 
-  #                                                                                                                                                                                data.filter$Ng * (Y.bar.g / pi.hat) - tau.est[d] * (data.filter$A / pi.hat) * data.filter$Ng)^2 * data.filter$A)
-    #data.bin <- data.frame(data.bin, Xi.tilde.1, Xi.tilde.0, Y.tau.D = data.bin$Y - tau[d] * data.bin$A)
-    
-    data.bin <- data.frame(data.filter, Xi.tilde.1, Xi.tilde.0, Y.tau.D = Y.bar.g - tau.est[d] * data.filter$A)
+    data.bin <- data.frame(data.filter, Xi.tilde.1, Xi.tilde.0, Y.tau.D = Y.bar.g * data.filter$Ng + tau.est[d] * mean(data.filter$Ng))
     n.d <- length(data.bin$G.id)
     Ng.d <-data.bin$Ng
     
@@ -219,18 +195,13 @@ as.var <- function(model, fit)
     {
       Xi.1.mean[i] <- mean(data.bin[data.bin$A %in% 1 & data.bin$S %in% data.bin$S[i], ]$Xi.tilde.1)
       Xi.0.mean[i] <- mean(data.bin[data.bin$A %in% 0 & data.bin$S %in% data.bin$S[i], ]$Xi.tilde.0)
-      Y.g.bar.cl.1[i] <- mean(data.bin[data.bin$A %in% 1 & data.bin$S %in% data.bin$S[i], ]$Y.tau.D * data.bin[data.bin$A %in% 1 & data.bin$S %in% data.bin$S[i], ]$Ng)
-      Y.g.bar.cl.0[i] <- mean(data.bin[data.bin$A %in% 0 & data.bin$S %in% data.bin$S[i], ]$Y.tau.D * data.bin[data.bin$A %in% 0 & data.bin$S %in% data.bin$S[i], ]$Ng)
+      Y.g.bar.cl.1[i] <- mean(data.bin[data.bin$A %in% 1 & data.bin$S %in% data.bin$S[i], ]$Y.tau.D)
+      Y.g.bar.cl.0[i] <- mean(data.bin[data.bin$A %in% 0 & data.bin$S %in% data.bin$S[i], ]$Y.tau.D)
     }
     
     Xi.hat.1 <- Xi.tilde.1 - Xi.1.mean
     Xi.hat.0 <- Xi.tilde.0 - Xi.0.mean
     Xi.hat.2 <- Y.g.bar.cl.1 - Y.g.bar.cl.0
-    
-    #old.1  <- Xi.hat.1
-    #old.mean <- Xi.1.mean
-    #old.tilde <- Xi.tilde.1 
-    #test.table <- data.frame(old.1, Xi.hat.1, old.mean, Xi.1.mean, old.tilde, Xi.tilde.1, data.bin$A)
     
     sigma.hat.sq <-  mean((data.bin$A * (Xi.hat.1)^2 + (1 - data.bin$A) * (Xi.hat.0)^2 + (Xi.hat.2)^2)) /  (mean(Ng.d))^2
     
@@ -238,8 +209,6 @@ as.var <- function(model, fit)
     n.vec[d]   <- n.d
     
   }
-  #print(var.vec)
-  #print(n.vec)
   se.vec <- sqrt(var.vec/n.vec)
   return(se.vec)
 }
@@ -257,8 +226,8 @@ sreg <- function(Y,D,S,G.id,Ng,X, exp.option = FALSE)
     model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option = FALSE)
     fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = FALSE)
   }else{
-  model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option = TRUE)
-  fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = TRUE)
+    model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option = TRUE)
+    fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = TRUE)
   }
   tau.est <- fit$tau.hat
   #as.var.est <- as.var(Y,S,D,X,model,tau.est)
@@ -328,6 +297,7 @@ summary.sreg <- function(model)
   cat(paste("Signif. codes:  0 ‘***’ 0.001 ‘**’",       
             "0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1\n"))                      
 }
+
 
 
 ####################################################################
