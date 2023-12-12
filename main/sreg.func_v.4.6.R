@@ -192,7 +192,7 @@ as.var <- function(model, fit)
     Xi.tilde.0 <- ((1 / (1 - pi.hat)) - 1) * mu.hat.0 + mu.hat.d -
       (data.filter$Ng * Y.bar.g / (1 - pi.hat)) - tau.est[d] * (data.filter$Ng - Ng.Sg.mean)
     
-    data.bin <- data.frame(data.filter, Xi.tilde.1, Xi.tilde.0, Y.tau.D = Y.bar.g * data.filter$Ng)#+ tau.est[d] * data.filter$Ng)
+    data.bin <- data.frame(data.filter, Xi.tilde.1, Xi.tilde.0, Y.tau.D = Y.bar.g * data.filter$Ng - tau.est[d] * data.filter$Ng)#+ tau.est[d] * data.filter$Ng)
 
     n.d <- length(data.bin$G.id)
     Ng.d <-data.bin$Ng
@@ -201,8 +201,8 @@ as.var <- function(model, fit)
     Xi.0.mean <- rep(NA,n.d)
     Y.g.bar.cl.1 <- rep(NA,n.d)
     Y.g.bar.cl.0 <- rep(NA,n.d)
-    #Y.g.mean.1 <- rep(NA,n.d)
-    #Y.g.mean.0 <- rep(NA,n.d)
+    Y.g.mean.1 <- rep(NA,n.d)
+    Y.g.mean.0 <- rep(NA,n.d)
     
     for (i in 1:n.d)
     {
@@ -213,11 +213,15 @@ as.var <- function(model, fit)
       #Y.g.mean.1[i] <- mean(data.bin[data.bin$A %in% 1, ]$Y.tau.D)
       #Y.g.mean.0[i] <- mean(data.bin[data.bin$A %in% 0, ]$Y.tau.D)
     }
-    
+    #print(Y.g.mean.1)
+    #print(Y.g.mean.0)
+    #print(mean(Y.g.mean.1) - mean(Y.g.mean.0))
     Xi.hat.1 <- Xi.tilde.1 - Xi.1.mean
     Xi.hat.0 <- Xi.tilde.0 - Xi.0.mean
-    Xi.hat.2 <- (Y.g.bar.cl.1 - Y.g.bar.cl.0) - tau.est[d] * (Ng.Sg.mean - mean(data.filter$Ng))
-    
+    Xi.hat.2 <- Y.g.bar.cl.1 - Y.g.bar.cl.0 #- tau.est[d] * (Ng.Sg.mean - mean(data.filter$Ng))
+    #Xi.hat.2.alt <- (Y.g.bar.cl.1 - Y.g.bar.cl.0) - tau.est[d] * (Ng.Sg.mean)
+    #print(mean(Xi.hat.2^2))
+    #print(mean(Xi.hat.2.alt^2))
     sigma.hat.sq <-  mean((data.bin$A * (Xi.hat.1)^2 + (1 - data.bin$A) * (Xi.hat.0)^2 + (Xi.hat.2)^2)) /  (mean(Ng.d))^2
     
     var.vec[d] <- sigma.hat.sq

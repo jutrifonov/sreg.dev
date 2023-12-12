@@ -33,7 +33,7 @@ library(progress)
 #         Please, provide the path to the corresponding source
 #                  file with functions on your PC
 #                    ↓↓↓↓↓↓↓↓↓↓↓HERE↓↓↓↓↓↓↓↓↓↓↓
-rm(list = ls())
+rm(list = ls()) 
 source('~/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.6.R')
 enableJIT(3)
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
@@ -56,20 +56,19 @@ clusterEvalQ(cl, {
   library(parallel)
   source('~/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.6.R')
 })
-
 # The main function for the Lapply loop
 # Function that performs simulations and takes as input
 # Only the number of simulation, sim.id
 sim.func <- function(sim.id)
 {
-  G = 200
+  G = 100
   Nmax=500;
   tau.vec <- c(0)
   n.treat <- length(tau.vec)
   max.support = Nmax/10-1;
   gamma.vec <-c(0.4, 0.2, 1)
   n.strata <- 2
-  
+
   seed <- 1000 + sim.id
   set.seed(seed)
   Ng <- gen.cluster.sizes(G, max.support)[,1]
@@ -136,7 +135,7 @@ sim.func <- function(sim.id)
 }
 
 # Parallelize the simulations and store the results
-simres <- parLapply(cl, 1:2000, sim.func)
+simres <- parLapply(cl, 1:10000, sim.func)
 #mb <- microbenchmark(parLapply(cl, 1:100, sim.func), times = 1)
 
 ###################
@@ -155,13 +154,13 @@ mean(se)
 mean(ci.hit)
 length(tau)
 
-G = 100
+G = 1000
 Nmax=500;
 tau.vec <- c(0)
 n.treat <- length(tau.vec)
 max.support = Nmax/10-1;
 gamma.vec <-c(0.4, 0.2, 1)
-n.strata <- 2
+n.strata <- 4
 
 Ng <- gen.cluster.sizes(G, max.support)[,1]
 #Ng <- rep(Nmax, G)                                                            # uncomment and comment the previous line for a equal-size design
@@ -187,7 +186,7 @@ lin.adj(1, model = model, data = df)
 
 est <- tau.hat(Y,D,S,G.id,Ng,X,model)
 est$tau.hat
-
+as.var(model, est)
 #model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option =T) # change for exp.option = T if the equal-size design
 #fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = T)
 result <- tryCatch({sreg(Y,D,S,G.id,Ng,X, exp.option = F)}, error = function(e) { # tryCatch to avoid errors that stop the execution
@@ -197,3 +196,9 @@ result <- tryCatch({sreg(Y,D,S,G.id,Ng,X, exp.option = F)}, error = function(e) 
   NA
 })
 
+xi <- rnorm(1000, 5, 1)
+mean(xi^2)
+const <- 2
+mean((xi- 5)^2)
+var(xi)
+var(xi - const)
