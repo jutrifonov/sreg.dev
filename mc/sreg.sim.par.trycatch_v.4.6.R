@@ -33,7 +33,8 @@ library(progress)
 #         Please, provide the path to the corresponding source
 #                  file with functions on your PC
 #                    ↓↓↓↓↓↓↓↓↓↓↓HERE↓↓↓↓↓↓↓↓↓↓↓
-source('/Volumes/jutrifonov/pkg.sreg/v.4.6/sreg.func_v.4.6.R')
+rm(list = ls())
+source('~/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.6.R')
 enableJIT(3)
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
@@ -53,7 +54,7 @@ clusterEvalQ(cl, {
   library(Matrix)
   library(progress)
   library(parallel)
-  source('/Volumes/jutrifonov/pkg.sreg/v.4.6/sreg.func_v.4.6.R')
+  source('~/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.6.R')
 })
 
 # The main function for the Lapply loop
@@ -135,7 +136,7 @@ sim.func <- function(sim.id)
 }
 
 # Parallelize the simulations and store the results
-simres <- parLapply(cl, 1:1000, sim.func)
+simres <- parLapply(cl, 1:2000, sim.func)
 #mb <- microbenchmark(parLapply(cl, 1:100, sim.func), times = 1)
 
 ###################

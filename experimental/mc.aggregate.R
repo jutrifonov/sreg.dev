@@ -312,10 +312,10 @@ sample.set <- c(100, 300, 500, 1000, 2000)
 
 graph.data <- data.frame('s.size' = sample.set, 'tau' = tau.vec, 'se.num' = se.num.vec, 'se.analyt' = se.analyt.vec, 'se.diff' = abs(se.num.vec - se.analyt.vec), 'ci.hit' = ci.hit.vec)
 
-ggplot(graph.data, aes(x = s.size, y = se.diff)) +
+ggplot(graph.data, aes(x = s.size, y = se.analyt.vec)) +
   geom_line(size = 1, color = "red") + geom_point(size = 3, color = "red") +
-  labs(x = "Sample Size", y = "SE Difference") +
-  ggtitle("Graph of Sample Size vs. SE Difference")
+  labs(x = "Sample Size", y = "Variance estimate") +
+  ggtitle("Variance estimate")
 
 ggplot(graph.data) +
   geom_line(aes(x = s.size, y = se.num, color = "SE Num"), size = 1) +
@@ -328,5 +328,5 @@ ggplot(graph.data) +
 
 ggplot(graph.data, aes(x = s.size, y = ci.hit)) +
   geom_line(color = 'red') + geom_point(color = 'red') +
-  labs(x = "Sample Size", y = "Coverage %") + scale_y_continuous(limits = c(0.7, 1))
+  labs(x = "Sample Size", y = "Coverage %") + scale_y_continuous(limits = c(0.8, 1))
 
