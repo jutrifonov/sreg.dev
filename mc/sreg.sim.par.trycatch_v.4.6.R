@@ -61,13 +61,13 @@ clusterEvalQ(cl, {
 # Only the number of simulation, sim.id
 sim.func <- function(sim.id)
 {
-  G = 100
+  G = 900
   Nmax=500;
   tau.vec <- c(0)
   n.treat <- length(tau.vec)
   max.support = Nmax/10-1;
   gamma.vec <-c(0.4, 0.2, 1)
-  n.strata <- 2
+  n.strata <- 4
 
   seed <- 1000 + sim.id
   set.seed(seed)
@@ -151,8 +151,7 @@ ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
 mean(tau)
 sd(tau)
 mean(se)
-mean(ci.hit)
-length(tau)
+mean(ci.hit[2000:3000])
 
 G = 1000
 Nmax=500;
@@ -196,9 +195,4 @@ result <- tryCatch({sreg(Y,D,S,G.id,Ng,X, exp.option = F)}, error = function(e) 
   NA
 })
 
-xi <- rnorm(1000, 5, 1)
-mean(xi^2)
-const <- 2
-mean((xi- 5)^2)
-var(xi)
-var(xi - const)
+

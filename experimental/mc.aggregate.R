@@ -1,23 +1,42 @@
 library(ggplot2)
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim100.RData')
-tau.100 <- colMeans(na.omit(tau.mtrx)) 
-se.num.100 <- sapply(na.omit(as.data.frame(tau.mtrx)), sd)
-se.analyt.100 <- colMeans(na.omit(sigma.mtrx))
-ci.hit.100 <- colMeans(na.omit(ci.hit))
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim200.RData')
-tau.200 <- colMeans(na.omit(tau.mtrx)) 
-se.num.200 <- sapply(na.omit(as.data.frame(tau.mtrx)), sd)
-se.analyt.200 <- colMeans(na.omit(sigma.mtrx))
-ci.hit.200 <- colMeans(na.omit(ci.hit))
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/50.RData')
+tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
+se <- na.omit(sapply(simres, function(simres) simres$se))
+ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
+tau.50 <- mean(tau)
+se.num.50 <- sd(tau)
+se.analyt.50 <- mean(se)
+ci.hit.50 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim300.RData')
-tau.300 <- colMeans(na.omit(tau.mtrx)) 
-se.num.300 <- sapply(na.omit(as.data.frame(tau.mtrx)), sd)
-se.analyt.300 <- colMeans(na.omit(sigma.mtrx))
-ci.hit.300 <- colMeans(na.omit(ci.hit))
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/100.RData')
+tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
+se <- na.omit(sapply(simres, function(simres) simres$se))
+ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
+tau.100 <- mean(tau)
+se.num.100 <- sd(tau)
+se.analyt.100 <- mean(se)
+ci.hit.100 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim400.RData')
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/200.RData')
+tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
+se <- na.omit(sapply(simres, function(simres) simres$se))
+ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
+tau.200 <- mean(tau)
+se.num.200 <- sd(tau)
+se.analyt.200 <- mean(se)
+ci.hit.200 <- mean(ci.hit)
+
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/300.RData')
+tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
+se <- na.omit(sapply(simres, function(simres) simres$se))
+ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
+tau.300 <- mean(tau)
+se.num.300 <- sd(tau)
+se.analyt.300 <- mean(se)
+ci.hit.300 <- mean(ci.hit)
+
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/400.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -27,7 +46,7 @@ se.analyt.400 <- mean(se)
 ci.hit.400 <- mean(ci.hit)
 
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim500.RData')
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/500.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -36,7 +55,16 @@ se.num.500 <- sd(tau)
 se.analyt.500 <- mean(se)
 ci.hit.500 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim750.RData')
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/600.RData')
+tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
+se <- na.omit(sapply(simres, function(simres) simres$se))
+ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
+tau.600 <- mean(tau)
+se.num.600 <- sd(tau)
+se.analyt.600 <- mean(se)
+ci.hit.600 <- mean(ci.hit)
+
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/750.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -45,7 +73,16 @@ se.num.750 <- sd(tau)
 se.analyt.750 <- mean(se)
 ci.hit.750 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim1000.RData')
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/900.RData')
+tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
+se <- na.omit(sapply(simres, function(simres) simres$se))
+ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
+tau.900 <- mean(tau)
+se.num.900 <- sd(tau)
+se.analyt.900 <- mean(se)
+ci.hit.900 <- mean(ci.hit)
+
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/1000.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -54,8 +91,7 @@ se.num.1000 <- sd(tau)
 se.analyt.1000 <- mean(se)
 ci.hit.1000 <- mean(ci.hit)
 
-
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim1500.RData')
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/1500.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -64,7 +100,7 @@ se.num.1500 <- sd(tau)
 se.analyt.1500 <- mean(se)
 ci.hit.1500 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim2000.RData')
+load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/2000.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -73,60 +109,42 @@ se.num.2000 <- sd(tau)
 se.analyt.2000 <- mean(se)
 ci.hit.2000 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim3000.RData')
-tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
-se <- na.omit(sapply(simres, function(simres) simres$se))
-ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.3000 <- mean(tau)
-se.num.3000 <- sd(tau)
-se.analyt.3000 <- mean(se)
-ci.hit.3000 <- mean(ci.hit)
-
-load('/Users/trifonovjuri/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Sim/sim5000.RData')
-tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
-se <- na.omit(sapply(simres, function(simres) simres$se))
-ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.5000 <- mean(tau)
-se.num.5000 <- sd(tau)
-se.analyt.5000 <- mean(se)
-ci.hit.5000 <- mean(ci.hit)
-
-tau.vec <- c(tau.100, tau.200, tau.300, tau.400,
-             tau.500, tau.750, tau.1000, tau.1500, 
-             tau.2000, tau.3000, tau.5000)
-se.num.vec <- c(se.num.100, se.num.200, se.num.300, se.num.400,
-                se.num.500, se.num.750, se.num.1000, se.num.1500,
-                se.num.2000, se.num.3000, se.num.5000)
-se.analyt.vec <- c(se.analyt.100, se.analyt.200, se.analyt.300, se.analyt.400,
-                   se.analyt.500, se.analyt.750, se.analyt.1000, se.analyt.1500,
-                   se.analyt.2000, se.analyt.3000, se.analyt.5000)
-ci.hit.vec <- c(ci.hit.100, ci.hit.200, ci.hit.300, ci.hit.400,
-                ci.hit.500, ci.hit.750, ci.hit.1000, ci.hit.1500,
-                ci.hit.2000, ci.hit.3000, ci.hit.5000)
-sample.set <- c(100, 200, 300, 400, 500, 750, 1000, 1500, 2000, 3000, 5000)
+tau.vec <- c(tau.50, tau.100, tau.200, tau.300,tau.400,
+             tau.500, tau.750, tau.1000)
+se.num.vec <- c(se.num.50, se.num.100, se.num.200, se.num.300, se.num.400,
+                se.num.500, se.num.750, se.num.1000)
+se.analyt.vec <- c(se.analyt.50, se.analyt.100, se.analyt.200, se.analyt.300, se.analyt.400,
+                   se.analyt.500, se.analyt.750, se.analyt.1000)
+ci.hit.vec <- c(ci.hit.50, ci.hit.100, ci.hit.200, ci.hit.300, ci.hit.400,
+                ci.hit.500, ci.hit.750, ci.hit.1000)
+sample.set <- c(50, 100, 200, 300, 400, 500, 750, 1000)
 
 graph.data <- data.frame('s.size' = sample.set, 'tau' = tau.vec, 'se.num' = se.num.vec, 'se.analyt' = se.analyt.vec, 'se.diff' = abs(se.num.vec - se.analyt.vec), 'ci.hit' = ci.hit.vec)
 
 ggplot(graph.data, aes(x = s.size, y = se.diff)) +
   geom_line(size = 1, color = "red") + geom_point(size = 3, color = "red") +
-  labs(x = "Sample Size", y = "SE Difference") +
-  ggtitle("Graph of Sample Size vs. SE Difference")
+  labs(x = "Sample Size (number of clusters)", y = "SD Difference") +
+  theme_minimal() +
+  ggtitle("Absolute Difference Between the 'True' Standard Deviation and the Estimated Value vs Sample Size")
 
 ggplot(graph.data) +
-  geom_line(aes(x = s.size, y = se.num, color = "SE Num"), size = 1) +
-  geom_point(aes(x = s.size, y = se.num, color = "SE Num"), size = 3) +
-  geom_line(aes(x = s.size, y = se.analyt, color = "SE Analyt"), size = 1) +
-  geom_point(aes(x = s.size, y = se.analyt, color = "SE Analyt"), size = 3) +
-  labs(x = "Sample Size", y = "SE") +
-  scale_color_manual(values = c("SE Num" = "blue", "SE Analyt" = "red")) +
-  theme_minimal()
+  geom_line(aes(x = s.size, y = se.num, color = "Estimated"), size = 1) +
+  geom_point(aes(x = s.size, y = se.num, color = "Estimated"), size = 3) +
+  geom_line(aes(x = s.size, y = se.analyt, color = "'True'"), size = 1) +
+  geom_point(aes(x = s.size, y = se.analyt, color = "'True'"), size = 3) +
+  labs(x = "Sample Size (number of clusters)", y = "SD") +
+  scale_color_manual(values = c("'True'" = "blue", "Estimated" = "red")) +
+  theme_minimal() + 
+  ggtitle("Comparison of the 'True' Standard Deviation and The Estimated Value vs Sample Size")
 
 ggplot(graph.data, aes(x = s.size, y = ci.hit)) +
   geom_line(color = 'red') + geom_point(color = 'red') +
-  labs(x = "Sample Size", y = "Coverage %")
+  labs(x = "Sample Size (number of clusters)", y = "Coverage")  + geom_label(aes(label = round(ci.hit.vec , 3)), size = 3)+
+    ylim(0.7, 1) + theme_minimal() + 
+  ggtitle("Coverage vs Sample Size")
 
-
-
+round(ci.hit.vec , 3)
+help(round)
 ### 10 strata design
 library(ggplot2)
 
