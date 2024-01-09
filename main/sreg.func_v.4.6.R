@@ -1,3 +1,23 @@
+#%##%##%##%###%##%##%##%###%##%##%##%###%##%
+### This R file provides the collection ####
+### of functions to estimate the ATE    ####
+### under CAR with multiple treatments  ####
+###        & cluster-level treatment    ####
+#%##%##%##%###%##%##%##%###%##%##%##%###%##%
+####      The code is developed by      ####
+####      @Juri Trifonov, UChicago      ####
+####            Supervisors:            ####
+####      @Azeem Shaikh, UChicago       ####
+####    @Max Tabord-Meehan, UChicago    ####
+#%##%##%##%###%##%##%##%###%##%##%##%###%##%
+#%##%##%##%##
+#%# v.4.6 #%#
+#%##%##%##%##
+#-------------------------------------------------------------------
+#%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%
+#%##%##%##%##%##%#      I. ATE  estimator     #%##%##%##%##%##%##%##
+#%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%
+#-------------------------------------------------------------------
 #------------------------------------------------------------------
 #%# (1) Auxiliary function providing the appropriate data.frame
 #%#     for the subsequent iterative OLS estimation. Takes into account
@@ -156,11 +176,13 @@ tau.hat <- function(Y,D,S,G.id,Ng,X,model, exp.option = FALSE)
                     'data.bin' = data.bin.list)
   return(rtrn.list)
 }
-####################################################################
-####################################################################
-###################### Variance Estimator ##########################
-####################################################################
-####################################################################
+
+#-------------------------------------------------------------------
+#%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%
+#%##%##%##%##%##%#    II. Variance  estimator     #%##%##%##%##%##%#
+#%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%
+#-------------------------------------------------------------------
+
 #-------------------------------------------------------------------
 # Variance Estimator
 #-------------------------------------------------------------------
@@ -317,13 +339,17 @@ summary.sreg <- function(model)
             "0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1\n"))                      
 }
 
+#-------------------------------------------------------------------------------
+#%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%#%##%##%##%#
+#%##%##%##%##%##%## III. DGP functions for simulations #%##%##%##%##%##%##%##%#%
+#%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%##%#%##%##%##%#
+#-------------------------------------------------------------------------------
 
-####################################################################
-####################################################################
-####################################################################
+#-------------------------------------------------------------------
+#%# (1) Cluster sizes generation
 #-------------------------------------------------------------------
 gen.cluster.sizes <-function(G,max.support,s=1.5)
-  #-------------------------------------------------------------------
+#-------------------------------------------------------------------
 {
   #-------------------------------------------------------------------
   # X-plain: Draws G clusters with a maximum sample size Nmax given Z
@@ -348,7 +374,9 @@ gen.cluster.sizes <-function(G,max.support,s=1.5)
   # Return the data frame
   return(samples);
 }
-#------------------------------------------------------------------
+#-------------------------------------------------------------------
+#%# (2) Potential outcomes generation
+#-------------------------------------------------------------------
 gen.data.pot <- function(Ng, G, tau.vec, sigma1=sqrt(2), 
                          gamma.vec = c(0.4, 0.2, 1, 0.1, 0.8), n.treat)
   #------------------------------------------------------------------
@@ -378,34 +406,8 @@ gen.data.pot <- function(Ng, G, tau.vec, sigma1=sqrt(2),
   return (ret.list)
 }
 
-#---------------------------------------------------------------------
-#%# Function taken from Ivan's website
-#%# to generate the strata from the observed covariates
-#%# NB! Works only if we form strata from one W.
-#---------------------------------------------------------------------
-form.strata <- function(baseline,num.strata)
-  #---------------------------------------------------------------------
-{
-  #-------------------------------------------------------------------
-  # X-plain: Generates strata indicators from covariates (W).
-  #         - W: covariates (must be scalar)
-  #         - num.strata: the number of strata to be formed
-  #         - model: model in baseline.
-  #-------------------------------------------------------------------
-  n <- baseline$G
-  W<-baseline$Z.g.2;
-  bounds<-seq(min(W),max(W),length.out = num.strata+1); # careful with bounds
-  I.S   <- matrix(0,n,num.strata);
-  for (s in 1:num.strata)
-  {
-    I.S[,s]<- (W>bounds[s])*(W<=bounds[s+1]);
-  }
-  
-  return(I.S)
-}
-#form.strata(test.mod, 10)
 #-------------------------------------------------------------------
-#%# (2) Random Treatment Assignment
+#%# (3) Random Treatment Assignment
 #%source function for dgp.obs()
 #-------------------------------------------------------------------
 gen.treat <- function(pi.matr.w, ns, k) 
@@ -431,8 +433,9 @@ gen.treat <- function(pi.matr.w, ns, k)
   
   return(result)
 }
+
 #-------------------------------------------------------------------
-#%# (3) Generate the formula for Y.obs (Rubin model)
+#%# (4) Generate the formula for Y.obs (Rubin model)
 #%source function for dgp.obs()
 #-------------------------------------------------------------------
 gen.rubin.formula <- function(n.treat) 
@@ -462,8 +465,9 @@ gen.rubin.formula <- function(n.treat)
   }
   return(formula)
 }
+
 #-------------------------------------------------------------------
-#%# (4) Generate observed outcomes,
+#%# (5) Generate observed outcomes,
 #%#     by taking as input the potential outcomes,
 #%#     matrix of strata assignments, pi.vec, and 
 #%#     number of treatments
@@ -524,3 +528,33 @@ dgp.obs <- function(baseline, I.S, pi.vec, n.treat)
                    'cl.lvl.data' = data.short)
   return(ret.list)
 }
+
+#---------------------------------------------------------------------
+#%# (6) Function taken from Ivan's website
+#%# to generate the strata from the observed covariates
+#%# NB! Works only if we form strata from one W.
+#---------------------------------------------------------------------
+form.strata <- function(baseline,num.strata)
+  #---------------------------------------------------------------------
+{
+  #-------------------------------------------------------------------
+  # X-plain: Generates strata indicators from covariates (W).
+  #         - W: covariates (must be scalar)
+  #         - num.strata: the number of strata to be formed
+  #         - model: model in baseline.
+  #-------------------------------------------------------------------
+  n <- baseline$G
+  W<-baseline$Z.g.2;
+  bounds<-seq(min(W),max(W),length.out = num.strata+1); # careful with bounds
+  I.S   <- matrix(0,n,num.strata);
+  for (s in 1:num.strata)
+  {
+    I.S[,s]<- (W>bounds[s])*(W<=bounds[s+1]);
+  }
+  
+  return(I.S)
+}
+
+
+
+
