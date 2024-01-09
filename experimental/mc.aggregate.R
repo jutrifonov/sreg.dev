@@ -1,15 +1,6 @@
 library(ggplot2)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/50.RData')
-tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
-se <- na.omit(sapply(simres, function(simres) simres$se))
-ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.50 <- mean(tau)
-se.num.50 <- sd(tau)
-se.analyt.50 <- mean(se)
-ci.hit.50 <- mean(ci.hit)
-
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/100.RData')
+load('/Users/yutrifonov/Desktop/sreg/data/new/100.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -18,35 +9,16 @@ se.num.100 <- sd(tau)
 se.analyt.100 <- mean(se)
 ci.hit.100 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/200.RData')
+load('/Users/yutrifonov/Desktop/sreg/data/new/250.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.200 <- mean(tau)
-se.num.200 <- sd(tau)
-se.analyt.200 <- mean(se)
-ci.hit.200 <- mean(ci.hit)
+tau.250 <- mean(tau)
+se.num.250 <- sd(tau)
+se.analyt.250 <- mean(se)
+ci.hit.250 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/300.RData')
-tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
-se <- na.omit(sapply(simres, function(simres) simres$se))
-ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.300 <- mean(tau)
-se.num.300 <- sd(tau)
-se.analyt.300 <- mean(se)
-ci.hit.300 <- mean(ci.hit)
-
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/400.RData')
-tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
-se <- na.omit(sapply(simres, function(simres) simres$se))
-ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.400 <- mean(tau)
-se.num.400 <- sd(tau)
-se.analyt.400 <- mean(se)
-ci.hit.400 <- mean(ci.hit)
-
-
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/500.RData')
+load('/Users/yutrifonov/Desktop/sreg/data/new/500.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -55,16 +27,8 @@ se.num.500 <- sd(tau)
 se.analyt.500 <- mean(se)
 ci.hit.500 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/600.RData')
-tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
-se <- na.omit(sapply(simres, function(simres) simres$se))
-ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.600 <- mean(tau)
-se.num.600 <- sd(tau)
-se.analyt.600 <- mean(se)
-ci.hit.600 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/750.RData')
+load('/Users/yutrifonov/Desktop/sreg/data/new/750.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -73,16 +37,8 @@ se.num.750 <- sd(tau)
 se.analyt.750 <- mean(se)
 ci.hit.750 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/900.RData')
-tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
-se <- na.omit(sapply(simres, function(simres) simres$se))
-ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
-tau.900 <- mean(tau)
-se.num.900 <- sd(tau)
-se.analyt.900 <- mean(se)
-ci.hit.900 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/1000.RData')
+load('/Users/yutrifonov/Desktop/sreg/data/new/1000.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -91,7 +47,7 @@ se.num.1000 <- sd(tau)
 se.analyt.1000 <- mean(se)
 ci.hit.1000 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/1500.RData')
+load('/Users/yutrifonov/Desktop/sreg/data/new/1500.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -100,7 +56,7 @@ se.num.1500 <- sd(tau)
 se.analyt.1500 <- mean(se)
 ci.hit.1500 <- mean(ci.hit)
 
-load('/Users/trifonovjuri/Desktop/pkg.sreg/sreg.git/data/final/2000.RData')
+load('/Users/yutrifonov/Desktop/sreg/data/new/2000.RData')
 tau <- na.omit(as.numeric(sapply(simres, function(simres) simres$tau)))
 se <- na.omit(sapply(simres, function(simres) simres$se))
 ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
@@ -109,15 +65,15 @@ se.num.2000 <- sd(tau)
 se.analyt.2000 <- mean(se)
 ci.hit.2000 <- mean(ci.hit)
 
-tau.vec <- c(tau.50, tau.100, tau.200, tau.300,tau.400,
-             tau.500, tau.750, tau.1000)
-se.num.vec <- c(se.num.50, se.num.100, se.num.200, se.num.300, se.num.400,
-                se.num.500, se.num.750, se.num.1000)
-se.analyt.vec <- c(se.analyt.50, se.analyt.100, se.analyt.200, se.analyt.300, se.analyt.400,
-                   se.analyt.500, se.analyt.750, se.analyt.1000)
-ci.hit.vec <- c(ci.hit.50, ci.hit.100, ci.hit.200, ci.hit.300, ci.hit.400,
-                ci.hit.500, ci.hit.750, ci.hit.1000)
-sample.set <- c(50, 100, 200, 300, 400, 500, 750, 1000)
+tau.vec <- c(tau.100, tau.250, tau.500,
+             tau.750, tau.1000, tau.1500, tau.2000)
+se.num.vec <- c(se.num.100, se.num.250, se.num.500, se.num.750,
+                se.num.1000, se.num.1500, se.num.2000)
+se.analyt.vec <- c(se.analyt.100, se.analyt.250,
+                   se.analyt.500, se.analyt.750, se.analyt.1000, se.analyt.1500, se.analyt.2000)
+ci.hit.vec <- c(ci.hit.100, ci.hit.250,
+                ci.hit.500, ci.hit.750, ci.hit.1000, ci.hit.1500, ci.hit.2000)
+sample.set <- c(100, 250, 500, 750, 1000, 1500, 2000)
 
 graph.data <- data.frame('s.size' = sample.set, 'tau' = tau.vec, 'se.num' = se.num.vec, 'se.analyt' = se.analyt.vec, 'se.diff' = abs(se.num.vec - se.analyt.vec), 'ci.hit' = ci.hit.vec)
 
@@ -140,7 +96,7 @@ ggplot(graph.data) +
 ggplot(graph.data, aes(x = s.size, y = ci.hit)) +
   geom_line(color = 'red') + geom_point(color = 'red') +
   labs(x = "Sample Size (number of clusters)", y = "Coverage")  + geom_label(aes(label = round(ci.hit.vec , 3)), size = 3)+
-    ylim(0.7, 1) + theme_minimal() + 
+    ylim(0.6, 1) + theme_minimal() + 
   ggtitle("Coverage vs Sample Size")
 
 round(ci.hit.vec , 3)

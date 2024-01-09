@@ -180,17 +180,17 @@ as.var <- function(model, fit)
     data.filter <- fit$data.bin[[d]]
     
     n.d <- length(data.filter$G.id)
-    Ng.Sg.mean <- rep(NA,n.d)
-    for (i in 1:n.d)
-    {
-      Ng.Sg.mean[i] <- mean(data.filter[data.filter$S %in% data.filter$S[i], ]$Ng)
-    }
+    #Ng.Sg.mean <- rep(NA,n.d)
+    #for (i in 1:n.d)
+    #{
+    #  Ng.Sg.mean[i] <- mean(data.filter[data.filter$S %in% data.filter$S[i], ]$Ng)
+    #}
     
     Xi.tilde.1 <- (1 - (1/pi.hat)) * mu.hat.d - mu.hat.0 + 
-      (data.filter$Ng * Y.bar.g / pi.hat) - tau.est[d] * (data.filter$Ng - Ng.Sg.mean)
+      (data.filter$Ng * Y.bar.g / pi.hat) - tau.est[d] * data.filter$Ng
     
     Xi.tilde.0 <- ((1 / (1 - pi.hat)) - 1) * mu.hat.0 + mu.hat.d -
-      (data.filter$Ng * Y.bar.g / (1 - pi.hat)) - tau.est[d] * (data.filter$Ng - Ng.Sg.mean)
+      (data.filter$Ng * Y.bar.g / (1 - pi.hat)) - tau.est[d] * data.filter$Ng
     
     data.bin <- data.frame(data.filter, Xi.tilde.1, Xi.tilde.0, Y.tau.D = Y.bar.g * data.filter$Ng - tau.est[d] * data.filter$Ng)#+ tau.est[d] * data.filter$Ng)
 
@@ -273,7 +273,7 @@ summary.sreg <- function(model)
   #-------------------------------------------------------------------
 {
   n         <- length(model$data$Y)
-  G         <- length(unique(model$G.id))
+  G         <- length(unique(model$data$G.id))
   tau.hat   <- as.vector(model$tau.hat)
   se.rob    <- as.vector(model$se.rob)
   t.stat    <- as.vector(model$t.stat)

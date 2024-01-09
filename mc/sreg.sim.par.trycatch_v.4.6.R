@@ -34,7 +34,7 @@ library(progress)
 #                  file with functions on your PC
 #                    ↓↓↓↓↓↓↓↓↓↓↓HERE↓↓↓↓↓↓↓↓↓↓↓
 rm(list = ls()) 
-source('~/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.6.R')
+source('~/Desktop/sreg/main/sreg.func_v.4.6.R')
 enableJIT(3)
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
 #%##%##%##%###%##%##%##%###%##%##%##%###%##%#%##%##%##%###%##%##%##%##
@@ -54,20 +54,20 @@ clusterEvalQ(cl, {
   library(Matrix)
   library(progress)
   library(parallel)
-  source('~/Desktop/pkg.sreg/sreg.git/main/sreg.func_v.4.6.R')
+  source('~/Desktop/sreg/main/sreg.func_v.4.6.R')
 })
 # The main function for the Lapply loop
 # Function that performs simulations and takes as input
 # Only the number of simulation, sim.id
 sim.func <- function(sim.id)
 {
-  G = 900
+  G = 100
   Nmax=500;
   tau.vec <- c(0)
   n.treat <- length(tau.vec)
   max.support = Nmax/10-1;
   gamma.vec <-c(0.4, 0.2, 1)
-  n.strata <- 4
+  n.strata <- 2
 
   seed <- 1000 + sim.id
   set.seed(seed)
@@ -151,8 +151,9 @@ ci.hit <- na.omit(sapply(simres, function(simres) simres$ci.hit))
 mean(tau)
 sd(tau)
 mean(se)
-mean(ci.hit[2000:3000])
+mean(ci.hit)
 
+set.seed(123)
 G = 1000
 Nmax=500;
 tau.vec <- c(0)
@@ -181,10 +182,30 @@ G.id <- data.sim$G.id
 
 model <- lm.iter(Y,D,S,G.id,Ng,X)
 df <- data.frame(Y,D,S,G.id,Ng,X)
+
+res <- sreg(Y,D,S,G.id,Ng,X, exp.option = F)
+
+res$tau.hat
+res$se.rob
+
+model <- lm.iter(Y,D,S,G.id,Ng,X)
 lin.adj(1, model = model, data = df)
 
-est <- tau.hat(Y,D,S,G.id,Ng,X,model)
-est$tau.hat
+est.3 <- tau.hat.3(Y,D,S,G.id,Ng,X,model)
+est.3$tau.hat
+
+est.2 <- tau.hat.2(Y,D,S,G.id,Ng,X,model)
+est.2$tau.hat
+psi.g <- unlist(est.2$Y.bar.g) * (est.2$Ng.ind/mean(est.2$Ng.ind))
+lm.model <- lm(psi.g ~ est.2$Ag)
+
+est.1 <- tau.hat.1(Y,D,S,G.id,Ng,X,model)
+est.1$tau.hat
+lm.model.1 <- lm(Y ~ D)
+
+
+
+
 as.var(model, est)
 #model <- lm.iter(Y,D,S,G.id,Ng,X, exp.option =T) # change for exp.option = T if the equal-size design
 #fit <- tau.hat(Y,D,S,G.id,Ng,X,model, exp.option = T)
