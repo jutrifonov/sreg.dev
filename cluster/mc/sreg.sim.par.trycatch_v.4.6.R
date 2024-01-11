@@ -153,9 +153,11 @@ sd(tau)
 mean(se)
 mean(ci.hit)
 
+rm(list = ls()) 
+source('~/Desktop/sreg/cluster/main/sreg.func_v.4.6.R')
 set.seed(123)
-G = 1000
-Nmax=500;
+G = 200
+Nmax=50;
 tau.vec <- c(0)
 n.treat <- length(tau.vec)
 max.support = Nmax/10-1;
@@ -180,11 +182,13 @@ X <- data.sim$X
 Ng <- data.sim$Ng
 G.id <- data.sim$G.id
 
-model <- lm.iter(Y,D,S,G.id,Ng,X)
-df <- data.frame(Y,D,S,G.id,Ng,X)
+model <- lm.iter(Y,S,D,G.id,Ng,X)
+df <- data.frame(Y,S,D,G.id,Ng,X)
 
-res <- sreg(Y,D,S,G.id,Ng,X, exp.option = F)
+res <- sreg(Y,S,D,G.id,Ng,X, exp.option = F)
+summary.sreg(res)
 
+summary.creg(res)
 res$tau.hat
 res$se.rob
 
