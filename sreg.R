@@ -103,8 +103,6 @@ lm.iter.sreg <- function(Y,S,D,X)
       data.filtered.adj <- data.frame(Y = data.filtered$Y, data.X)
       result <- lm(Y ~ ., data = data.filtered.adj)
       theta.list[[d+1]][s, ] <- coef(result)[2:(2 + ncol(X)-1)]
-      #theta.matr[d+1, s] <- coef(result)[2]
-      #k = k + 1
     }
   }
   list.rtrn <- theta.list
@@ -217,7 +215,7 @@ tau.hat.sreg <- function(Y,S,D,X=NULL, model=NULL)
       Xi.tilde.0 <- ((1 / (1 - data.bin$pi)) - 1) * mu.hat.0 + mu.hat.d -
         (data.bin$Y / (1 - data.bin$pi)) 
       
-      data.bin <- data.frame(data.bin, Xi.tilde.1, Xi.tilde.0, Y.tau.D = data.bin$Y) #- tau[d] * data.bin$A)
+      data.bin <- data.frame(data.bin, Xi.tilde.1, Xi.tilde.0, Y.tau.D = data.bin$Y)
       
       Xi.1.mean <- rep(NA,n.d)
       Xi.0.mean <- rep(NA,n.d)
@@ -262,7 +260,7 @@ tau.hat.sreg <- function(Y,S,D,X=NULL, model=NULL)
       Xi.tilde.0 <- ((1 / (1 - data.bin$pi)) - 1) * mu.hat.0 + mu.hat.d -
         (data.bin$Y / (1 - data.bin$pi)) 
       
-      data.bin <- data.frame(data.bin, Xi.tilde.1, Xi.tilde.0, Y.tau.D = data.bin$Y) #- tau[d] * data.bin$A)
+      data.bin <- data.frame(data.bin, Xi.tilde.1, Xi.tilde.0, Y.tau.D = data.bin$Y) 
       
       Xi.1.mean <- rep(NA,n.d)
       Xi.0.mean <- rep(NA,n.d)
@@ -404,7 +402,7 @@ summary.sreg <- function(model)
 #-------------------------------------------------------------------
 #%# (1) Potential outcomes generation
 #-------------------------------------------------------------------
-dgp.po <- function(n, theta.vec, gamma.vec, n.treat)
+dgp.po.sreg <- function(n, theta.vec, gamma.vec, n.treat)
   #-------------------------------------------------------------------
 {
   if (n.treat !=length(theta.vec))
@@ -454,7 +452,7 @@ dgp.po <- function(n, theta.vec, gamma.vec, n.treat)
 #%# (2) Random Treatment Assignment
 #%source function for dgp.obs()
 #-------------------------------------------------------------------
-gen.treat <- function(pi.matr.w, ns, k) 
+gen.treat.sreg <- function(pi.matr.w, ns, k) 
   #-------------------------------------------------------------------
 {
   rows <- nrow(pi.matr.w)
@@ -481,7 +479,7 @@ gen.treat <- function(pi.matr.w, ns, k)
 #%# (3) Generate the formula for Y.obs (Rubin model)
 #%source function for dgp.obs()
 #-------------------------------------------------------------------
-gen.rubin.formula <- function(n.treat) {
+gen.rubin.formula.sreg <- function(n.treat) {
   #-------------------------------------------------------------------
   # Create a sequence of A values from 0 to max.A
   A.values <- 0:n.treat
@@ -513,7 +511,7 @@ gen.rubin.formula <- function(n.treat) {
 #%#     matrix of strata assignments, pi.vec, and 
 #%#     number of treatments
 #-------------------------------------------------------------------
-dgp.obs <- function(baseline, I.S, pi.vec, n.treat)
+dgp.obs.sreg <- function(baseline, I.S, pi.vec, n.treat)
   #-------------------------------------------------------------------
 {
   if (n.treat != length(pi.vec))
@@ -536,7 +534,7 @@ dgp.obs <- function(baseline, I.S, pi.vec, n.treat)
     ns      <- length(index)
     
     # pick a random permutation of elements in \mathbb{A} and 0 
-    A[index]<- gen.treat(pi.matr.w, ns, k)
+    A[index]<- gen.treat.sreg(pi.matr.w, ns, k)
   }
   
   #now we need to generate observed outcomes via Rubin model
@@ -544,7 +542,7 @@ dgp.obs <- function(baseline, I.S, pi.vec, n.treat)
   {
     assign(paste("Y.", a, sep = ""), baseline[[paste("Y.", a, sep = "")]])
   }
-  formula <- gen.rubin.formula(n.treat)
+  formula <- gen.rubin.formula.sreg(n.treat)
   Y.obs <- eval(parse(text = formula))
   
   ret.list <- list('Y' = Y.obs,
@@ -557,7 +555,7 @@ dgp.obs <- function(baseline, I.S, pi.vec, n.treat)
 #%# to generate the strata from the observed covariates
 #%# NB! Works only if we form strata from one W.
 #-------------------------------------------------------------------
-form.strata <- function(baseline,num.strata)
+form.strata.sreg <- function(baseline,num.strata)
   #-------------------------------------------------------------------
 {
   #-------------------------------------------------------------------
